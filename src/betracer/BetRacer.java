@@ -27,7 +27,7 @@ public class BetRacer {
         Scanner input = new Scanner(System.in);
         
         //declare files
-        File playerData = new File("C:\\BetRacer\\playerData.txt");
+        File playerData = new File("playerData.txt");
         
         //delare player
         Player player = new Player();
