@@ -166,9 +166,10 @@ public class BetRacer {
                 System.out.println(":::COMMAND LIST:::");
                 System.out.println("type /stats to bring up your profile stats\ntype /race to race\ntype /quit to leave the game\ntype /help to see this again!");
                 System.out.println(divide);
+            } else if(command.compareTo("/quit") == 0) {
+                break;
             } else {
-                System.out.println("Maybe try '/help' to see the commands. Try one of those!");
-                System.out.println(divide);
+                System.out.println("Did not enter a valid command. Try '/help' to see a list of valid commands.");
             }
             if (player.getMoney() < 1.0){
                 System.out.println("You lose!");
@@ -177,10 +178,14 @@ public class BetRacer {
             System.out.print("Command: "); command = input.next();
             
         } while (command.compareTo("/quit") != 0);
-        
-        //saving method will go here
+        //game saves then checks to see if they have money. if not it deletes the save
         saveGame(playerData, player);
         
+        if(player.getMoney() < 1){
+            String line = player.getName() + " " + player.getMoney() + " "  + player.getWins() + " " + player.getLosses();
+            deleteSave(line, playerData);
+            System.out.println("Since you lost... your save file has been deleted. Better luck nest time!");
+        }
         System.out.println(divide);
         System.out.println("Thanks for playing!\nIf you have suggestions or inquiries email me at BetRacer@gmail.com");
     }
@@ -449,10 +454,31 @@ public class BetRacer {
             if(lineArray[0].equals(player.getName()) == true){
                 output.println(player.getName() + " " + player.getMoney() + " " + player.getWins() + " " + player.getLosses());
             } else {
-                output.println(lineArray[i]);
+                output.println(incomingData.get(i));
             }
         }
         output.close();
         System.out.println("::Game Saved::");
+    }
+    
+    //this next method will be used to determine if you have money left. If not it will delete your save file.
+    //code taken from stack overflow on how to delete a line from a text file.
+    public static void deleteSave(String lineToRemove, File playerdata) throws FileNotFoundException, IOException{
+        File tempPlayerData = new File("tempFile.txt");
+        
+        BufferedReader reader = new BufferedReader(new FileReader(playerdata));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(tempPlayerData));
+        String currentLine;
+        
+        while((currentLine = reader.readLine()) != null){
+            //trim new line when comparing lineToRemove
+            String trimmedLine = currentLine.trim();
+            if(trimmedLine.equals(lineToRemove)) continue;
+            writer.write(currentLine + "\n");
+        }
+        writer.close();
+        reader.close();
+        playerdata.delete();
+        boolean successful = tempPlayerData.renameTo(playerdata);
     }
 }    
