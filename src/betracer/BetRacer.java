@@ -171,13 +171,16 @@ public class BetRacer {
                 System.out.println(divide);
             }
             if (player.getMoney() < 1.0){
-                command = "/quit";
                 System.out.println("You lose!");
                 break;
             }
             System.out.print("Command: "); command = input.next();
             
         } while (command.compareTo("/quit") != 0);
+        
+        //saving method will go here
+        saveGame(playerData, player);
+        
         System.out.println(divide);
         System.out.println("Thanks for playing!\nIf you have suggestions or inquiries email me at BetRacer@gmail.com");
     }
@@ -430,4 +433,26 @@ public class BetRacer {
         }
         return index;
     }
-}
+    
+    //method used to save your game data if you still have money when you quit
+    public static void saveGame(File playerdata, Player player) throws FileNotFoundException{
+        ArrayList<String> incomingData = new ArrayList();
+        Scanner dataFile = new Scanner(playerdata);
+        while(dataFile.hasNext()){
+            String sentence = dataFile.nextLine();
+            incomingData.add(sentence);
+        }
+        dataFile.close();
+        PrintWriter output = new PrintWriter(playerdata);
+        for (int i = 0; i < incomingData.size(); i++) {
+            String[] lineArray = incomingData.get(i).split(" ");
+            if(lineArray[0].equals(player.getName()) == true){
+                output.println(player.getName() + " " + player.getMoney() + " " + player.getWins() + " " + player.getLosses());
+            } else {
+                output.println(lineArray[i]);
+            }
+        }
+        output.close();
+        System.out.println("::Game Saved::");
+    }
+}    

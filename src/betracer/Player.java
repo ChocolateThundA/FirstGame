@@ -13,7 +13,7 @@ public class Player {
     public Player(){
         name = "";
         wins = 0; losses = 0;
-        money = 500.00;
+        money = 1000.00;
     }
     
     //methods
