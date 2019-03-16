@@ -22,6 +22,7 @@ public class BetRacer {
         String name, divide = "---------------------", command;
         boolean playerExist;
         double bet, minimumBet;
+        double[] racerProgs;
         
         //declare Scanner
         Scanner input = new Scanner(System.in);
@@ -41,7 +42,7 @@ public class BetRacer {
         
         ////MAIN CODE///-----------------------------------///MAIN CODE////
         System.out.println("-----Betting Racer-----");
-        System.out.println("--game developed by: \nProgrammer Patty");
+        System.out.println("--game developed by: \nProgrammer Patty\nCreated: 3/15/2019");
         System.out.println("-------------------------\n");
         //first segement of the main is used to establish player data. Code will take in a username and check to see if
         //the player exists. If so, it will load all that data. If not it will start a new data line.
@@ -110,7 +111,7 @@ public class BetRacer {
                         System.out.println("Minimum buy in for degree " + degreeOfRace + ": " + minimumBet);
                         System.out.print("What is your monetary bet?: "); bet = input.nextDouble();
                         if (bet < minimumBet || bet > player.getMoney()){
-                            System.out.println("Your bet is too low or you don't have enough.\nMinimum bet must equal to or over: " + minimumBet);
+                            System.out.println("Your bet is too low or you don't have enough.");
                         } else if (bet >= minimumBet) {
                             cont = true;
                             player.alterMoney(-bet);
@@ -128,35 +129,12 @@ public class BetRacer {
                     } while (cont == false);
                     System.out.println(divide + "\n Let the race begin!!");
                     lengthOfTrack = makeTrack(degreeOfRace);
-                    winner = race(lengthOfTrack);
-                    System.out.println("Racer " + winner + " is the winner!");
-                    //next will be checking to see if you picked the correct car
-                    double winnings = 0;
-                    if(winner == racerBet){
-                        switch(degreeOfRace){
-                            case 0:
-                                player.alterMoney(2 * bet);
-                                winnings = 2 * bet;
-                                break;
-                            case 1:
-                                player.alterMoney(3 * bet);
-                                winnings = 3 * bet;
-                                break;
-                            case 2:
-                                player.alterMoney(4 * bet);
-                                winnings = 4 * bet;
-                                break;
-                            case 3:
-                                player.alterMoney(5 * bet);
-                                winnings = 5 * bet;
-                                break;
-                        }
-                        player.addWins();
-                        System.out.println("You won " + winnings);
-                    } else{
-                        System.out.println("You lost " + bet);
-                        player.addLoss();
-                    }
+                    racerProgs = race(lengthOfTrack);
+                    //change being made... going to put method that calcs 1st, 2nd, 3rd
+                    results(racerProgs, racerBet, player, degreeOfRace, bet);
+                    
+                    
+                    //
                     System.out.println(divide);
                 } else {
                     System.out.println("Sorry... you don't have enough for the race today.\n" + divide );
@@ -187,7 +165,9 @@ public class BetRacer {
             System.out.println("Since you lost... your save file has been deleted. Better luck nest time!");
         }
         System.out.println(divide);
-        System.out.println("Thanks for playing!\nIf you have suggestions or inquiries email me at BetRacer@gmail.com");
+        System.out.println("Thanks for playing!\nIf you have suggestions or inquiries email me at BetRacerGame@gmail.com");
+        
+        
     }
     //METHODS//
     
@@ -226,7 +206,8 @@ public class BetRacer {
     //Method used to do the race
     //should calculate a winner, simulate the race
     @SuppressWarnings("empty-statement")
-    public static int race(int length) throws InterruptedException{
+    public static double[] race(int length) throws InterruptedException{
+        
         //making the racers here this way they change everytime
         Car racer1 = new Car("Racer 1"); boolean racer1HP = true; int racer1SPD = 0;
         Car racer2 = new Car("Racer 2"); boolean racer2HP = true; int racer2SPD = 0;
@@ -242,7 +223,7 @@ public class BetRacer {
         //declaring a string to print out later
         String racerProgress;
         //declare an arraylist that stores the progress doubles of the finishers
-        double[] finishers = new double[6];
+        double[] finisherProgs = new double[6];
         
         
         do{
@@ -259,7 +240,7 @@ public class BetRacer {
                 racer1.calcProg(racer1.getDist(), length);
                 if (racer1.getDist() >= length){
                     winner = true;
-                    finishers[0] = racer1.getProg();
+               
                     
                 }
                 //third part checks to see if driver is out of gas(moves)
@@ -280,7 +261,6 @@ public class BetRacer {
                 racer2.calcProg(racer2.getDist(), length);
                 if (racer2.getDist() >= length){
                     winner = true;
-                    finishers[1] = racer2.getProg();
                 }
                 //third part checks to see if driver is out of gas(moves)
                 racer2.adjustMoves(racer2SPD);
@@ -300,7 +280,6 @@ public class BetRacer {
                 racer3.calcProg(racer3.getDist(), length);
                 if (racer3.getDist() >= length){
                     winner = true;
-                    finishers[2] = racer3.getProg();
                 }
                 //third part checks to see if driver is out of gas(moves)
                 racer3.adjustMoves(racer3SPD);
@@ -320,7 +299,6 @@ public class BetRacer {
                 racer4.calcProg(racer4.getDist(), length);
                 if (racer4.getDist() >= length){
                     winner = true;
-                    finishers[3] = racer4.getProg();
                 }
                 //third part checks to see if driver is out of gas(moves)
                 racer4.adjustMoves(racer4SPD);
@@ -340,7 +318,6 @@ public class BetRacer {
                 racer5.calcProg(racer5.getDist(), length);
                 if (racer5.getDist() >= length){
                     winner = true;
-                    finishers[4] = racer5.getProg();
                 }
                 //third part checks to see if driver is out of gas(moves)
                 racer5.adjustMoves(racer5SPD);
@@ -360,7 +337,6 @@ public class BetRacer {
                 racer6.calcProg(racer6.getDist(), length);
                 if (racer6.getDist() >= length){
                     winner = true;
-                    finishers[5] = racer6.getProg();
                 }
                 //third part checks to see if driver is out of gas(moves)
                 racer6.adjustMoves(racer6SPD);
@@ -373,38 +349,77 @@ public class BetRacer {
           racerProgress = String.format("::Race Stats(turn %d)::\nRacer 1: %-5.2f Racer 2: %-5.2f Racer 3: %-5.2f\nRacer 4: %-5.2f Racer 5: %-5.2f Racer 6: %-5.2f", turns, racer1.getProg(), racer2.getProg(), racer3.getProg(), racer4.getProg(), racer5.getProg(),racer6.getProg());
           System.out.println(racerProgress + "\n");
           
-          //this segment here calulates the winner of the cars that finish... in case of ties of course
-          if(winner == true){
-              double highest = finishers[0];
-              for (int i = 0; i < finishers.length; i++) {
-                  if (finishers[i] > highest){
-                      highest = finishers[i];
-                  }
-              }
-              int numIndex = indexOf(finishers, highest);
-              winnerNum = numIndex + 1;
-          }
-          
-          //this segment of code is incase none of the cars reach the finish line
-          if (racer1HP == false && racer2HP == false && racer3HP == false && racer4HP == false && racer5HP == false && racer6HP == false){
-              ArrayList<Double> percents = new ArrayList();
-              percents.add(racer1.getProg()); percents.add(racer2.getProg()); percents.add(racer3.getProg()); percents.add(racer4.getProg()); percents.add(racer5.getProg()); percents.add(racer6.getProg()); 
-              double max = percents.get(0);
-              for (int i = 0; i < percents.size(); i++) {
-                  if(percents.get(i) > max){
-                      max = percents.get(i);
-                  }
-              }
-              int num = percents.indexOf(max) + 1;
-              winnerNum = num;
-              winner = true;
-          }
           //this little bit here will  allow the user to read the data and then the code will continue
           Thread.sleep(2000);
-          //code shoud continue until race finishes
+   
+          //code should continue until race finishes
         } while (winner == false);
+        finisherProgs[0] = racer1.getProg(); finisherProgs[1] = racer2.getProg(); finisherProgs[2] = racer3.getProg();
+        finisherProgs[3] = racer4.getProg(); finisherProgs[4] = racer5.getProg(); finisherProgs[5] = racer6.getProg();
         
-      return winnerNum;  
+      return finisherProgs;  
+    }
+    
+    //method used to calculate the finishing postions of the racers, calc you money 
+    public static void results(double[] results, int bet, Player player, int degree, double moneyBet){
+        //first segement calcs first
+        double winnings;
+        double firstProg = results[0];
+        int first;
+        for (int i = 0; i < results.length; i++) {
+            if(results[i] == firstProg && i+1 == bet){
+                firstProg = results[i];
+            } else if(results[i] > firstProg){
+                firstProg = results[i];
+            }
+        }
+        first = indexOf(results, firstProg) + 1;
+        results[first - 1] = 0.0;
+        //next we calculate second
+        double secondProg = 0.0;
+        int second;
+        for (int i = 0; i < results.length; i++) {
+            if(results[i] == secondProg && i+1 == bet){
+                secondProg = results[i];
+            } else if(results[i] > secondProg){
+                secondProg = results[i];
+            }
+        }
+        second = indexOf(results, secondProg) + 1;
+        results[second - 1] = 0.0;
+        //next we calc third
+        double thirdProg = 0.0;
+        int third;
+         for (int i = 0; i < results.length; i++) {
+            if(results[i] == thirdProg && i+1 == bet){
+                thirdProg = results[i];
+            } else if(results[i] > thirdProg){
+                thirdProg = results[i];
+            }
+        }
+        third = indexOf(results, thirdProg) + 1;
+        results[third - 1] = 0.0;
+        
+        //next we calculate player winnings or better yet losings
+        if(bet == first){
+            winnings = calcFirst(degree, moneyBet);
+            player.alterMoney(winnings);
+            player.addWins();
+            System.out.println("FIRST PLACE! You won: " + winnings);
+        } else if (bet == second){
+            winnings = calcSecond(degree, moneyBet);
+            player.addLoss();
+            player.alterMoney(winnings);
+            System.out.println("You got second. You won: " + winnings);
+        } else if (bet == third){
+            winnings = calcThird(degree, moneyBet);
+            player.alterMoney(winnings);
+            player.addLoss();
+            System.out.println("You got third. You won: " + winnings);
+        } else {
+            player.addLoss();
+            System.out.println("You lost: " + moneyBet);
+        }
     }
     
     //method used to check if you have played before under the name
@@ -481,4 +496,68 @@ public class BetRacer {
         playerdata.delete();
         boolean successful = tempPlayerData.renameTo(playerdata);
     }
+    public static double calcFirst(int degree, double moneyBet){
+        double winnings;
+        switch(degree){
+            case 0:
+                winnings = moneyBet * 2;
+                break;
+            case 1:
+                winnings = moneyBet * 3;
+                break;
+            case 2:
+                winnings = moneyBet * 4;
+                break;
+            case 3:
+                winnings = moneyBet * 6;
+                break;
+            default:
+                winnings = 0.0;
+                break;
+        }
+        return winnings;
+    }
+    public static double calcSecond(int degree, double moneyBet){
+        double winnings;
+        switch(degree){
+            case 0:
+                winnings = moneyBet;
+                break;
+            case 1:
+                winnings = moneyBet / 2;
+                break;
+            case 2:
+                winnings = moneyBet / 2;
+                break;
+            case 3:
+                winnings = moneyBet / 2;
+                break;
+            default:
+                winnings = 0.0;
+                break;
+        }
+        return winnings;
+    }
+    public static double calcThird(int degree, double moneyBet){
+        double winnings;
+        switch(degree){
+            case 0:
+                winnings = moneyBet /2;
+                break;
+            case 1:
+                winnings = moneyBet / 3;
+                break;
+            case 2:
+                winnings = moneyBet / 3;
+                break;
+            case 3:
+                winnings = moneyBet / 4;
+                break;
+            default:
+                winnings = 0.0;
+                break;
+        }
+        return winnings;
+    }
+        
 }    
