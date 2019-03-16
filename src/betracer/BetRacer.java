@@ -33,13 +33,6 @@ public class BetRacer {
         //delare player
         Player player = new Player();
         
-        
-        //TEST CODE//
-        /*degreeOfRace = degreeGenerate();
-        lengthOfTrack = makeTrack(degreeOfRace);
-        winner = race(lengthOfTrack);
-        System.out.println("The winner is...\nRacer " + winner);*/
-        
         ////MAIN CODE///-----------------------------------///MAIN CODE////
         System.out.println("-----Betting Racer-----");
         System.out.println("--game developed by: \nProgrammer Patty\nCreated: 3/15/2019");
@@ -351,6 +344,10 @@ public class BetRacer {
           
           //this little bit here will  allow the user to read the data and then the code will continue
           Thread.sleep(2000);
+          //check to see if any all racers have stopped
+          if(racer1HP == false && racer2HP == false && racer3HP == false && racer4HP == false && racer5HP == false && racer6HP == false){
+              winner = true;
+          }
    
           //code should continue until race finishes
         } while (winner == false);
