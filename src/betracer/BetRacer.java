@@ -592,7 +592,7 @@ public class BetRacer {
                 for (int j = 0; j < dataLines.size(); j++) {
                     String[] lineArray = dataLines.get(j).split(" ");
                     if (lineArray[1].compareTo(Double.toString(sortedScores.get(i))) == 0) {
-                        System.out.printf("%s: %10s\n", lineArray[0], lineArray[1]);
+                        System.out.printf("%2d: %10s -- %10s\n",i + 1 ,lineArray[0], lineArray[1]);
                     }
                 }
             }
@@ -601,7 +601,7 @@ public class BetRacer {
                 for (int j = 0; j < dataLines.size(); j++) {
                     String[] lineArray = dataLines.get(j).split(" ");
                     if (lineArray[1].compareTo(Double.toString(sortedScores.get(i))) == 0) {
-                        System.out.printf("%s: %10s\n", lineArray[0], lineArray[1]);
+                        System.out.printf("%2d: %10s -- %10s\n",i + 1 ,lineArray[0], lineArray[1]);
                     }
                 }
             }
