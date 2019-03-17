@@ -67,7 +67,7 @@ public class BetRacer {
         //now that all the player data is set we can start the game...
          //intializing menu.. user can see some options here and make choice
         System.out.println("What would you like to do! Command list below...");
-        System.out.println("'/stats' : see your stats\n'/race' : bet on a race\n'/quit' : leave the game\n'/help' : gives a list of the commands\n---");
+        System.out.println("'/stats' : see your stats\n'/race' : bet on a race\n'/quit' : leave the game\n'/help' : gives a list of the commands\n'/scores' : take a look at the top local players\n---");
         System.out.print("Command: ");command = input.next();
         System.out.println(divide);
         do{   
@@ -139,6 +139,9 @@ public class BetRacer {
                 System.out.println(divide);
             } else if(command.compareTo("/quit") == 0) {
                 break;
+            } else if(command.compareTo("/scores") == 0) {
+                leaderBoard(playerData, player);
+                System.out.println(divide);
             } else {
                 System.out.println("Did not enter a valid command. Try '/help' to see a list of valid commands.");
             }
@@ -212,7 +215,7 @@ public class BetRacer {
         //declare a boolean so the race continues to go
         boolean winner = false;
         //declare an int to keep track of cycles and a way to keep track of winner
-        int turns = 0, winnerNum = 0;
+        int turns = 0;
         //declaring a string to print out later
         String racerProgress;
         //declare an arraylist that stores the progress doubles of the finishers
@@ -344,7 +347,7 @@ public class BetRacer {
           
           //this little bit here will  allow the user to read the data and then the code will continue
           Thread.sleep(2000);
-          //check to see if any all racers have stopped
+          //check to see if all racers have stopped
           if(racer1HP == false && racer2HP == false && racer3HP == false && racer4HP == false && racer5HP == false && racer6HP == false){
               winner = true;
           }
@@ -555,6 +558,55 @@ public class BetRacer {
                 break;
         }
         return winnings;
+    }
+    
+    //method used to display leaderboard
+    public static void leaderBoard(File playerData, Player player)throws FileNotFoundException{
+        Scanner fileReader = new Scanner(playerData);
+        Set<Double> scores = new HashSet();
+        ArrayList<String> dataLines = new ArrayList();
+        
+        //gather all money totals from players
+        while (fileReader.hasNext()){
+            fileReader.next();
+            scores.add(fileReader.nextDouble());
+            fileReader.nextLine();
+        }
+        fileReader.close();
+        //put the doubles in order from greatest to least
+        List<Double> sortedScores = new ArrayList(scores);
+        Collections.sort(sortedScores);
+        Collections.reverse(sortedScores);
+        
+        //store all the lines
+        Scanner fileReader2 = new Scanner(playerData);
+        while (fileReader2.hasNext()){
+            dataLines.add(fileReader2.nextLine());
+        }
+        fileReader2.close();
+        
+        //compare top ten scores to the lines in string Array list and print out those people.
+        System.out.println("--::Top 10 leaderboard::--");
+        if (sortedScores.size() >= 10){
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < dataLines.size(); j++) {
+                    String[] lineArray = dataLines.get(j).split(" ");
+                    if (lineArray[1].compareTo(Double.toString(sortedScores.get(i))) == 0) {
+                        System.out.printf("%s: %10s\n", lineArray[0], lineArray[1]);
+                    }
+                }
+            }
+        } else if (sortedScores.size() < 10){
+            for (int i = 0; i < sortedScores.size(); i++) {
+                for (int j = 0; j < dataLines.size(); j++) {
+                    String[] lineArray = dataLines.get(j).split(" ");
+                    if (lineArray[1].compareTo(Double.toString(sortedScores.get(i))) == 0) {
+                        System.out.printf("%s: %10s\n", lineArray[0], lineArray[1]);
+                    }
+                }
+            }
+        }
+        System.out.println("NOTE: Leaderboard updates after game is exited.\nYour current score is: " + player.getMoney());
     }
         
 }    
