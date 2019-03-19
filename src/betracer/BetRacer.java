@@ -98,41 +98,46 @@ public class BetRacer {
                         break;
                 }
                 System.out.println("Up next is a degree " + degreeOfRace + " race.");
+                //add in ability to choose if you want to do that race//
                 if (minimumBet <= player.getMoney()){
-                    boolean cont = false;
-                    do{
-                        System.out.println("Minimum buy in for degree " + degreeOfRace + ": " + minimumBet);
-                        System.out.print("What is your monetary bet?: "); bet = input.nextDouble();
-                        if (bet < minimumBet || bet > player.getMoney()){
-                            System.out.println("Your bet is too low or you don't have enough.");
-                        } else if (bet >= minimumBet) {
-                            cont = true;
-                            player.alterMoney(-bet);
-                        }
-                    } while (cont == false);
-                    System.out.print("Bet on a car...\nEnter a number 1-6: "); racerBet = (int)input.nextDouble();
-                    cont = false;
-                    do{
-                        if (racerBet < 1 || racerBet > 6){
-                            System.out.print("Did you read? Try a number between 1 and 6: ");
-                            racerBet = (int)input.nextDouble();
-                        } else {
-                            cont = true;
-                        }
-                    } while (cont == false);
-                    System.out.println(divide + "\n Let the race begin!!");
-                    lengthOfTrack = makeTrack(degreeOfRace);
-                    racerProgs = race(lengthOfTrack);
-                    //change being made... going to put method that calcs 1st, 2nd, 3rd
-                    results(racerProgs, racerBet, player, degreeOfRace, bet);
+                    System.out.print("Do you wish to bet on this race? Minimum by in " + minimumBet + "\n[1]yes [any other number]no: "); int reply = (int)input.nextDouble();
+                    System.out.println("---");
+                    if (reply == 1){
+                        boolean cont = false;
+                        do{
+                            System.out.println("Minimum buy in for degree " + degreeOfRace + ": " + minimumBet);
+                            System.out.print("What is your monetary bet?: "); bet = input.nextDouble();
+                            if (bet < minimumBet || bet > player.getMoney()){
+                                System.out.println("Your bet is too low or you don't have enough.");
+                            } else if (bet >= minimumBet) {
+                                cont = true;
+                                player.alterMoney(-bet);
+                            }
+                        } while (cont == false);
+                        System.out.print("Bet on a car...\nEnter a number 1-6: "); racerBet = (int)input.nextDouble();
+                        player.setBet(racerBet);
+                        cont = false;
+                        do{
+                            if (player.getBet() < 1 || player.getBet() > 6){
+                                System.out.print("Did you read? Try a number between 1 and 6: ");
+                                player.setBet((int)input.nextDouble());
+                            } else {
+                                cont = true;
+                            }
+                        } while (cont == false);
+                        System.out.println(divide);
+                        lengthOfTrack = makeTrack(degreeOfRace);
+                        racerProgs = race(lengthOfTrack, player);
+                        //method calcs first second and third!
+                        results(racerProgs, player.getBet(), player, degreeOfRace, bet);
                     
-                    
-                    //
-                    System.out.println(divide);
+                        System.out.println(divide);
+                    } else {
+                        System.out.println("Oh. well please come again soon!\n" + divide);
+                    }
                 } else {
                     System.out.println("Sorry... you don't have enough for the race today.\n" + divide );
-                }
-                    
+                }    
             } else if (command.compareTo("/help") == 0){
                 System.out.println(":::COMMAND LIST:::");
                 System.out.println("type /stats to bring up your profile stats\ntype /race to race\ntype /quit to leave the game\ntype /help to see this again!");
@@ -202,7 +207,7 @@ public class BetRacer {
     //Method used to do the race
     //should calculate a winner, simulate the race
     @SuppressWarnings("empty-statement")
-    public static double[] race(int length) throws InterruptedException{
+    public static double[] race(int length, Player player) throws InterruptedException{
         
         //making the racers here this way they change everytime
         Car racer1 = new Car("Racer 1"); boolean racer1HP = true; int racer1SPD = 0;
@@ -212,6 +217,8 @@ public class BetRacer {
         Car racer5 = new Car("Racer 5"); boolean racer5HP = true; int racer5SPD = 0;
         Car racer6 = new Car("Racer 6"); boolean racer6HP = true; int racer6SPD = 0;
         
+        //making a scanner for user input
+        Scanner input = new Scanner(System.in);
         //declare a boolean so the race continues to go
         boolean winner = false;
         //declare an int to keep track of cycles and a way to keep track of winner
@@ -221,7 +228,71 @@ public class BetRacer {
         //declare an arraylist that stores the progress doubles of the finishers
         double[] finisherProgs = new double[6];
         
-        
+        //going to add a way to observe the drivers at a cost
+        System.out.print("Would you like to observe a 3 drivers?. Cost is 125 for all three\nType 'yes' or 'no'-- Answer: ");
+        String answer = input.next();
+        Car racer;
+        int count = 1;
+        if(answer.compareTo("yes") == 0){
+            player.alterMoney(-25);
+            int num;
+            do{
+                System.out.print("Which car do you want to look at[1-6]: "); num = (int)input.nextDouble();
+                if(num < 1 || num > 6){
+                    boolean cont = false;
+                    do{
+                        System.out.print("Sorry, try number between 1 and 6: "); num = (int)input.nextDouble();
+                        if (num > 1 && num < 6){
+                            cont = true;
+                        }
+                    } while (cont == false);
+                }
+                //getting the racer;
+                switch(num){
+                    case 1:
+                        racer = racer1;
+                        break;
+                    case 2:
+                        racer = racer2;
+                        break;
+                    case 3:
+                        racer = racer3;
+                        break;
+                    case 4:
+                        racer = racer4;
+                        break;
+                    case 5:
+                        racer = racer5;
+                        break;
+                    case 6:
+                        racer = racer6;
+                        break;
+                    default:
+                        racer = racer1; //shouldn't ever happen
+                }
+                //then a method will execute that observes the racer
+                observeCar(racer);
+                count += 1;
+            }while(count <= 3);
+            //finally ask if the player would like to change their bet
+            boolean cont = false;
+            do {
+                System.out.print("Would you like to change your bet?\n[1]yes [0]no: "); num = (int)input.nextDouble();
+                if(num == 1){
+                    System.out.print("To which car?: ");
+                    player.setBet((int)input.nextDouble());
+                    System.out.println("-------------");
+                    cont = true;
+                } else if(num == 0){
+                    System.out.println("Goodluck!!");
+                    System.out.println("--------------");
+                    cont = true;
+                } else {
+                    System.out.println("Try a number 1 or 0");
+                }
+            } while (cont == false);
+        }
+        System.out.println("::Let the race begin!::");
         do{
             turns += 1;
             //----------------------------racer1-------------------------------//
@@ -608,5 +679,58 @@ public class BetRacer {
         }
         System.out.println("NOTE: Leaderboard updates after game is exited.\nYour current score is: " + player.getMoney());
     }
+    //method used to observe a certain car
+    public static void observeCar(Car racer){
+        //check all the car features
+        String speedCheck = checkSpeed(racer.getSpeed());
+        String accelCheck = checkAccel(racer.getAccel());
+        String moveCheck = checkMoves(racer.getMoves());
+        //print out the data
+        System.out.println(racer.getName() + "---\n" + speedCheck + "\n" + accelCheck + "\n" + moveCheck + "\n------");
+        
+    }
+    //used in observeCar
+    public static String checkSpeed(int speed){
+        String statement;
+        if (speed >= 1 && speed <=5){
+            statement = "doesnt't look all to fast.";
+        } else if (speed > 5 && speed <= 10){
+            statement = "looks somewhat fast."; 
+        } else if (speed > 10 && speed <= 15){
+            statement = "looks very fast.";
+        } else {
+            statement = "uhhh... an error occured?";
+        }
+        return statement;
+    }
+    //used in observeCar
+    public static String checkAccel(int accel){
+        String statement;
+        if (accel >= 1 && accel <= 3){
+            statement = "will be very slow off the line.";
+        } else if(accel > 3 && accel <=6){
+            statement = "has reasonable speed off the line.";
+        } else if (accel > 6 && accel <= 10){
+            statement = "is very quick off the line.";
+        } else {
+            statement = "uhhh... an error occured?";
+        }
+        return statement;
+    }
+    //used in observeCar
+    public static String checkMoves(int moves){
+        String statement;
+        if(moves >= 30 && moves < 50){
+            statement = "looks pretty busted. Might not last long.";
+        } else if (moves >= 50 && moves < 70){
+            statement = "looks decent. Should last pretty long.";
+        } else if (moves >= 70 && moves <= 90){
+            statement = "looks very intact. Won't break down for awhile.";
+        } else {
+             statement = "uhhh... an error occured?";
+        }
+        return statement;
+    }
+    
         
 }    

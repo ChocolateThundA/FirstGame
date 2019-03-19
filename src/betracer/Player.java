@@ -7,13 +7,14 @@ package betracer;
  */
 public class Player {
     private String name; 
-    private int wins, losses;
+    private int wins, losses, racerBet;
     private double money;
     
     public Player(){
         name = "";
         wins = 0; losses = 0;
         money = 1000.00;
+        racerBet = 0;
     }
     
     //methods
@@ -53,5 +54,11 @@ public class Player {
     @Override
     public String toString(){
         return String.format("Username: %s\nMoney: %.2f\nWins: %d    Losses: %d", name, money, wins, losses);
+    }
+    public void setBet(int num){
+        racerBet = num;
+    }
+    public int getBet(){
+        return racerBet;
     }
 }
