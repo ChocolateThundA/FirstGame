@@ -100,7 +100,7 @@ public class BetRacer {
                 System.out.println("Up next is a degree " + degreeOfRace + " race.");
                 //add in ability to choose if you want to do that race//
                 if (minimumBet <= player.getMoney()){
-                    System.out.print("Do you wish to bet on this race? Minimum by in " + minimumBet + "\n[1]yes [any other number]no: "); int reply = (int)input.nextDouble();
+                    System.out.print("Do you wish to participate in this race. Minimum payment will be: " + minimumBet + "\n[1]yes [any other number]no: "); int reply = (int)input.nextDouble();
                     System.out.println("---");
                     if (reply == 1){
                         boolean cont = false;
@@ -229,7 +229,7 @@ public class BetRacer {
         double[] finisherProgs = new double[6];
         
         //going to add a way to observe the drivers at a cost
-        System.out.print("Would you like to observe a 3 drivers?. Cost is 125 for all three\nType 'yes' or 'no'-- Answer: ");
+        System.out.print("Would you like to observe 3 drivers?. Cost is 25 for all three\nType 'yes' or 'no'-- Answer: ");
         String answer = input.next();
         Car racer;
         int count = 1;
@@ -343,7 +343,11 @@ public class BetRacer {
           System.out.println(racerProgress + "\n");
           
           //this little bit here will  allow the user to read the data and then the code will continue
-          Thread.sleep(2000);
+          if (turns <= 20){
+            Thread.sleep(2000);
+          } else {
+            Thread.sleep(500);
+          }
           //check to see if all racers have stopped
           if(racer1.getHP() == false && racer2.getHP() == false && racer3.getHP() == false && racer4.getHP() == false && racer5.getHP() == false && racer6.getHP() == false){
               winner = true;
@@ -619,11 +623,11 @@ public class BetRacer {
     public static String checkSpeed(int speed){
         String statement;
         if (speed >= 1 && speed <=5){
-            statement = "doesnt't look all to fast.";
+            statement = "-doesnt't look all to fast.";
         } else if (speed > 5 && speed <= 10){
-            statement = "looks somewhat fast."; 
+            statement = "--looks somewhat fast."; 
         } else if (speed > 10 && speed <= 15){
-            statement = "looks very fast.";
+            statement = "---looks very fast.";
         } else {
             statement = "uhhh... an error occured?";
         }
@@ -633,11 +637,11 @@ public class BetRacer {
     public static String checkAccel(int accel){
         String statement;
         if (accel >= 1 && accel <= 3){
-            statement = "will be very slow off the line.";
+            statement = "-will be very slow off the line.";
         } else if(accel > 3 && accel <=6){
-            statement = "has reasonable speed off the line.";
+            statement = "--has reasonable speed off the line.";
         } else if (accel > 6 && accel <= 10){
-            statement = "is very quick off the line.";
+            statement = "---is very quick off the line.";
         } else {
             statement = "uhhh... an error occured?";
         }
@@ -647,18 +651,18 @@ public class BetRacer {
     public static String checkMoves(int moves){
         String statement;
         if(moves >= 30 && moves < 50){
-            statement = "looks pretty busted. Might not last long.";
+            statement = "-looks pretty busted. Might not last long.";
         } else if (moves >= 50 && moves < 70){
-            statement = "looks decent. Should last pretty long.";
+            statement = "--looks decent. Should last pretty long.";
         } else if (moves >= 70 && moves <= 90){
-            statement = "looks very intact. Won't break down for awhile.";
+            statement = "---looks very intact. Won't break down for awhile.";
         } else {
              statement = "uhhh... an error occured?";
         }
         return statement;
     }
     
-    //used to clean up the race method. Moves the cars and returns their HP
+    //used to clean up the race method. Moves the cars, changes HP when needed and calcualtes RacerProg
     public static void racerUpdate(Car racer, int length){
        //first part calculates how far they move; cannot exceed max speed
        racer.addRate(racer.getAccel());
