@@ -210,12 +210,12 @@ public class BetRacer {
     public static double[] race(int length, Player player) throws InterruptedException{
         
         //making the racers here this way they change everytime
-        Car racer1 = new Car("Racer 1"); boolean racer1HP = true; int racer1SPD = 0;
-        Car racer2 = new Car("Racer 2"); boolean racer2HP = true; int racer2SPD = 0;
-        Car racer3 = new Car("Racer 3"); boolean racer3HP = true; int racer3SPD = 0;
-        Car racer4 = new Car("Racer 4"); boolean racer4HP = true; int racer4SPD = 0;
-        Car racer5 = new Car("Racer 5"); boolean racer5HP = true; int racer5SPD = 0;
-        Car racer6 = new Car("Racer 6"); boolean racer6HP = true; int racer6SPD = 0;
+        Car racer1 = new Car("Racer 1");
+        Car racer2 = new Car("Racer 2"); 
+        Car racer3 = new Car("Racer 3"); 
+        Car racer4 = new Car("Racer 4"); 
+        Car racer5 = new Car("Racer 5"); 
+        Car racer6 = new Car("Racer 6"); 
         
         //making a scanner for user input
         Scanner input = new Scanner(System.in);
@@ -296,120 +296,46 @@ public class BetRacer {
         do{
             turns += 1;
             //----------------------------racer1-------------------------------//
-            if(racer1HP == true){
-                //first part calculates how far they move; cannot exceed max speed
-                racer1SPD += racer1.getAccel();
-                if (racer1SPD > racer1.getSpeed()){
-                    racer1SPD = racer1.getSpeed();
-                }
-                //second part checks to see if they finished the race, also calculates what percent they have left
-                racer1.moveDist(racer1SPD);
-                racer1.calcProg(racer1.getDist(), length);
-                if (racer1.getDist() >= length){
-                    winner = true;
-               
-                    
-                }
-                //third part checks to see if driver is out of gas(moves)
-                racer1.adjustMoves(racer1SPD);
-                if (racer1.getMoves() <= 0){
-                    racer1HP = false;
-                }   
+            if(racer1.getHP() == true){
+              racerUpdate(racer1, length);
+              if(racer1.getIsWinner() == true){
+                  winner = true;
+              }
             }
             //---------------------------racer2-------------------------------//
-            if(racer2HP == true){
-                //first part calculates how far they move; cannot exceed max speed
-                racer2SPD += racer2.getAccel();
-                if (racer2SPD > racer2.getSpeed()){
-                    racer2SPD = racer2.getSpeed();
-                }
-                //second part checks to see if they finished the race, also calculates what percent they have left
-                racer2.moveDist(racer2SPD);
-                racer2.calcProg(racer2.getDist(), length);
-                if (racer2.getDist() >= length){
+            if(racer2.getHP() == true){
+                racerUpdate(racer2, length);
+                if(racer2.getIsWinner() == true){
                     winner = true;
                 }
-                //third part checks to see if driver is out of gas(moves)
-                racer2.adjustMoves(racer2SPD);
-                if (racer2.getMoves() <= 0){
-                    racer2HP = false;
-                }    
             } 
            //---------------------------racer3-------------------------------//
-           if(racer3HP == true){
-                //first part calculates how far they move; cannot exceed max speed
-                racer3SPD += racer3.getAccel();
-                if (racer3SPD > racer3.getSpeed()){
-                    racer3SPD = racer3.getSpeed();
-                }
-                //second part checks to see if they finished the race, also calculates what percent they have left
-                racer3.moveDist(racer3SPD);
-                racer3.calcProg(racer3.getDist(), length);
-                if (racer3.getDist() >= length){
+           if(racer3.getHP() == true){
+                racerUpdate(racer3, length);
+                if(racer2.getIsWinner() == true){
                     winner = true;
                 }
-                //third part checks to see if driver is out of gas(moves)
-                racer3.adjustMoves(racer3SPD);
-                if (racer3.getMoves() <= 0){
-                    racer3HP = false;
-                }    
             }
            //---------------------------racer4-------------------------------//
-           if(racer4HP == true){
-                //first part calculates how far they move; cannot exceed max speed
-                racer4SPD += racer4.getAccel();
-                if (racer4SPD > racer4.getSpeed()){
-                    racer4SPD = racer4.getSpeed();
-                }
-                //second part checks to see if they finished the race, also calculates what percent they have left
-                racer4.moveDist(racer4SPD);
-                racer4.calcProg(racer4.getDist(), length);
-                if (racer4.getDist() >= length){
+           if(racer4.getHP() == true){
+                racerUpdate(racer4, length);
+                if(racer4.getIsWinner() == true){
                     winner = true;
-                }
-                //third part checks to see if driver is out of gas(moves)
-                racer4.adjustMoves(racer4SPD);
-                if (racer4.getMoves() <= 0){
-                    racer4HP = false;
-                }    
+                }   
            }
            //---------------------------racer5-------------------------------//
-           if(racer5HP == true){
-                //first part calculates how far they move; cannot exceed max speed
-                racer5SPD += racer5.getAccel();
-                if (racer5SPD > racer5.getSpeed()){
-                    racer5SPD = racer5.getSpeed();
-                }
-                //second part checks to see if they finished the race, also calculates what percent they have left
-                racer5.moveDist(racer5SPD);
-                racer5.calcProg(racer5.getDist(), length);
-                if (racer5.getDist() >= length){
+           if(racer5.getHP() == true){
+                racerUpdate(racer5, length);
+                if(racer5.getIsWinner() == true){
                     winner = true;
-                }
-                //third part checks to see if driver is out of gas(moves)
-                racer5.adjustMoves(racer5SPD);
-                if (racer5.getMoves() <= 0){
-                    racer5HP = false;
                 }    
            }
           //---------------------------racer6-------------------------------//
-          if(racer6HP == true){
-                //first part calculates how far they move; cannot exceed max speed
-                racer6SPD += racer6.getAccel();
-                if (racer6SPD > racer6.getSpeed()){
-                    racer6SPD = racer6.getSpeed();
-                }
-                //second part checks to see if they finished the race, also calculates what percent they have left
-                racer6.moveDist(racer6SPD);
-                racer6.calcProg(racer6.getDist(), length);
-                if (racer6.getDist() >= length){
+          if(racer6.getHP() == true){
+                racerUpdate(racer6, length);
+                if(racer6.getIsWinner() == true){
                     winner = true;
-                }
-                //third part checks to see if driver is out of gas(moves)
-                racer6.adjustMoves(racer6SPD);
-                if (racer6.getMoves() <= 0){
-                    racer6HP = false;
-                }    
+                }   
            }
           
           //next segement of the method will display the racers progress through the race
@@ -419,7 +345,7 @@ public class BetRacer {
           //this little bit here will  allow the user to read the data and then the code will continue
           Thread.sleep(2000);
           //check to see if all racers have stopped
-          if(racer1HP == false && racer2HP == false && racer3HP == false && racer4HP == false && racer5HP == false && racer6HP == false){
+          if(racer1.getHP() == false && racer2.getHP() == false && racer3.getHP() == false && racer4.getHP() == false && racer5.getHP() == false && racer6.getHP() == false){
               winner = true;
           }
    
@@ -732,5 +658,23 @@ public class BetRacer {
         return statement;
     }
     
-        
+    //used to clean up the race method. Moves the cars and returns their HP
+    public static void racerUpdate(Car racer, int length){
+       //first part calculates how far they move; cannot exceed max speed
+       racer.addRate(racer.getAccel());
+       if (racer.getRate() > racer.getSpeed()){
+            racer.setRate(racer.getSpeed());
+        }
+        //second part checks to see if they finished the race, also calculates what percent they have left
+        racer.moveDist(racer.getRate());
+        racer.calcProg(racer.getDist(), length);
+        if (racer.getDist() >= length){
+            racer.setWinner();
+        }
+        //third part checks to see if driver is out of gas(moves)
+        racer.adjustMoves(racer.getRate());
+        if (racer.getMoves() <= 0){
+           racer.setHP(false);
+        }
+    }
 }    

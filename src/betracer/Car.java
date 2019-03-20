@@ -7,15 +7,19 @@ import java.util.*;
  */
 public class Car {
     private String name;
-    int acceleration, topSpeed, moves, distance;
+    int acceleration, topSpeed, moves, distance, rate;
     double progress;
+    boolean HP, isWinner;
     Random rand = new Random();
     
     public Car(String name){
         this.name = name;
         acceleration = rand.nextInt(10) + 1;
         topSpeed = rand.nextInt(15) + 1;
+        rate = 0;
         progress = 0.0;
+        HP = true;
+        isWinner = false;
         moves = rand.nextInt((90 - 30) + 1) + 30;
         distance = 0;
     }
@@ -50,6 +54,27 @@ public class Car {
     }
     public int getDist(){
         return distance;
+    }
+    public void setRate(int num){
+        rate = num;
+    }
+    public void addRate(int increase){
+        rate = rate + increase;
+    }
+    public int getRate(){
+        return rate;
+    }
+    public void setHP(boolean change){
+        HP = change;
+    }
+    public boolean getHP(){
+        return HP;
+    }
+    public void setWinner(){
+        isWinner = true;
+    }
+    public boolean getIsWinner(){
+        return isWinner;
     }
     
     @Override
