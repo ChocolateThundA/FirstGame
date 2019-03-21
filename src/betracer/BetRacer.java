@@ -18,7 +18,7 @@ public class BetRacer {
         //Declare variables
         int lengthOfTrack;
         int degreeOfRace;
-        int winner, racerBet;
+        int racerBet;
         String name, divide = "---------------------", command;
         boolean playerExist;
         double bet, minimumBet;
@@ -100,8 +100,8 @@ public class BetRacer {
                 System.out.println("Up next is a degree " + degreeOfRace + " race.");
                 //add in ability to choose if you want to do that race//
                 if (minimumBet <= player.getMoney()){
-                    System.out.print("Do you wish to participate in this race. Minimum payment will be: " + minimumBet + "\n[1]yes [any other number]no: "); int reply = (int)input.nextDouble();
-                    System.out.println("---");
+                    System.out.print("Do you wish to participate in this race. Minimum payment will be: " + minimumBet + "\n[1]yes [any other number]no: ");
+                    int reply = (int)input.nextDouble();
                     if (reply == 1){
                         boolean cont = false;
                         do{
@@ -312,7 +312,7 @@ public class BetRacer {
            //---------------------------racer3-------------------------------//
            if(racer3.getHP() == true){
                 racerUpdate(racer3, length);
-                if(racer2.getIsWinner() == true){
+                if(racer3.getIsWinner() == true){
                     winner = true;
                 }
             }
@@ -672,7 +672,7 @@ public class BetRacer {
         //second part checks to see if they finished the race, also calculates what percent they have left
         racer.moveDist(racer.getRate());
         racer.calcProg(racer.getDist(), length);
-        if (racer.getDist() >= length){
+        if (racer.getProg() >= 1.0){
             racer.setWinner();
         }
         //third part checks to see if driver is out of gas(moves)
