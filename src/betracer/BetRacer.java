@@ -417,6 +417,11 @@ public class BetRacer {
             player.alterMoney(winnings);
             player.addLoss();
             System.out.println("You got third. You won: " + winnings);
+        }else if (results[player.getBet()] > 1.0){
+            winnings = calcFinish(degree);
+            player.alterMoney(winnings);
+            player.addLoss();
+            System.out.println("You lost, however your car finished the race! You got back: " + winnings);
         } else {
             player.addLoss();
             System.out.println("You lost: " + moneyBet);
@@ -560,7 +565,27 @@ public class BetRacer {
         }
         return winnings;
     }
-    
+    public static double calcFinish(int degree){
+        double winnings;
+        switch(degree){
+            case 0:
+                winnings = 20;
+                break;
+            case 1:
+                winnings = 40;
+                break;
+            case 2:
+                winnings = 80;
+                break;
+            case 3:
+                winnings = 160;
+                break;
+            default:
+                winnings = 0.0;
+                break;
+        }
+        return winnings;
+    }
     //method used to display leaderboard
     public static void leaderBoard(File playerData, Player player)throws FileNotFoundException{
         Scanner fileReader = new Scanner(playerData);
