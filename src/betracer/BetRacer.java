@@ -44,6 +44,7 @@ public class BetRacer {
         //UPDATE: now we ask to see if two people would like to play!
         System.out.print("One[1] or Two[2] players: "); int firstInt = (int)input.nextDouble();
         boolean moveOn = false;
+        //check to see if input was appropriate
         if(firstInt != 1 && firstInt != 2){
             do{
                 System.out.print("Try again: ");
@@ -62,9 +63,10 @@ public class BetRacer {
                 newcomer(player, name, playerData);
                 System.out.println("Let's look at your stats for the first time!\n" + divide);
             } else {
-                System.out.println("Here's your stats!\n" + player.toString() + divide);
+                System.out.println("Here's your stats!\n" + player.toString() + "\n" + divide);
             }
             playerCount = 1;
+            
         //intialize both players and check if they exist.    
         } else if (firstInt == 2){
             System.out.print("Player 1 name: "); name = input.next();
@@ -78,7 +80,7 @@ public class BetRacer {
                 newcomer(player2, name, playerData);
             }
             System.out.println("Here are your stats!: \n");
-            System.out.println(player.toString() + "\n" + divide + "\n" + player2.toString());
+            System.out.println(player.toString() + "\n" + divide + "\n" + player2.toString() + "\n" + divide);
             playerCount = 2;
         }
 
@@ -121,7 +123,7 @@ public class BetRacer {
                 }
                 System.out.println("Up next is a degree " + degreeOfRace + " race.");
                 //add in ability to choose if you want to do that race//
-                if (minimumBet <= player.getMoney()){
+                if (minimumBet <= player.getMoney() && minimumBet <= player2.getMoney()){
                     System.out.print("Do you wish to participate in this race. Minimum payment will be: " + minimumBet + "\n[1]yes [any other number]no: ");
                     int reply = (int)input.nextDouble();
                     if (reply == 1){
@@ -172,7 +174,7 @@ public class BetRacer {
             } else {
                 System.out.println("Did not enter a valid command. Try '/help' to see a list of valid commands.");
             }
-            if (player.getMoney() < 1.0){
+            if (player.getMoney() < 1.0 || player2.getMoney() < 1.0){
                 System.out.println("You lose!");
                 break;
             }
@@ -181,11 +183,18 @@ public class BetRacer {
         } while (command.compareTo("/quit") != 0);
         //game saves then checks to see if they have money. if not it deletes the save
         saveGame(playerData, player);
-        
+        if (playerCount == 2){
+            saveGame(playerData, player2);
+        }
         if(player.getMoney() < 1){
             String line = player.getName() + " " + player.getMoney() + " "  + player.getWins() + " " + player.getLosses();
             deleteSave(line, playerData);
             System.out.println("Since you lost... your save file has been deleted. Better luck nest time!");
+        }
+        if(player2.getMoney() < 1){
+            String line = player2.getName() + " " + player2.getMoney() + " "  + player2.getWins() + " " + player2.getLosses();
+            deleteSave(line, playerData);
+            System.out.println("Since you lost, player2... your save file has been deleted. Better luck nest time!");
         }
         System.out.println(divide);
         System.out.println("Thanks for playing!\nIf you have suggestions or inquiries email me at BetRacerGame@gmail.com");
@@ -439,7 +448,7 @@ public class BetRacer {
             player.alterMoney(winnings);
             player.addLoss();
             System.out.println("You got third. You won: " + winnings);
-        }else if (results[player.getBet()] > 1.0){
+        }else if (results[player.getBet() - 1] > 1.0){
             winnings = calcFinish(degree);
             player.alterMoney(winnings);
             player.addLoss();
@@ -501,7 +510,8 @@ public class BetRacer {
             }
         }
         output.close();
-        System.out.println("::Game Saved::");
+        
+        System.out.println(":: " + player.getName() + " saved ::");
     }
     
     //this next method will be used to determine if you have money left. If not it will delete your save file.
