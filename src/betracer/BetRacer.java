@@ -19,6 +19,7 @@ public class BetRacer {
         int lengthOfTrack;
         int degreeOfRace;
         int racerBet;
+        int playerCount = 0;
         String name, divide = "---------------------", command;
         boolean playerExist;
         double bet, minimumBet;
@@ -32,6 +33,7 @@ public class BetRacer {
         
         //delare player
         Player player = new Player();
+        Player player2 = new Player();
         
         ////MAIN CODE///-----------------------------------///MAIN CODE////
         System.out.println("-----Betting Racer-----");
@@ -39,31 +41,47 @@ public class BetRacer {
         System.out.println("-------------------------\n");
         //first segement of the main is used to establish player data. Code will take in a username and check to see if
         //the player exists. If so, it will load all that data. If not it will start a new data line.
-        System.out.print("What is your name? (only one word) : ");
-        name = input.next();
-        
-        //this code is for creating a new user in case the one entered is not found in the file.
-        playerExist = loadFile(name, playerData, player);
-        if (playerExist == false){
-            player.setName(name);
-            System.out.println("Ahh.. a newcomer. Welcome " + name + "!");
-            
-            //code here taken from journalDev.com over how to add to the end of a file
-            FileWriter fr = new FileWriter(playerData, true);
-            BufferedWriter br = new BufferedWriter(fr);
-            PrintWriter output = new PrintWriter(br);
-            output.println(player.getName() + " " + player.getMoney() + " " + player.getWins() + " " + player.getLosses());
-            output.close();
-            br.close();
-            fr.close();
-            
-            //new user has been added. Let's show them their data...
-            System.out.println("Since you're new here, you should see your data!");
-            System.out.println(divide);
-        } else {
-            System.out.println("Welcome back " + player.getName() + "!\nHere are your current stats!\n" + divide);
+        //UPDATE: now we ask to see if two people would like to play!
+        System.out.print("One[1] or Two[2] players: "); int firstInt = (int)input.nextDouble();
+        boolean moveOn = false;
+        if(firstInt != 1 && firstInt != 2){
+            do{
+                System.out.print("Try again: ");
+                firstInt = (int)input.nextDouble();
+                if(firstInt == 1 || firstInt == 2){
+                    moveOn = true;
+                }
+            } while (moveOn == false);
         }
-        System.out.println(player.toString());
+        //intialize only one player. Check if they exist
+        if(firstInt == 1){
+            System.out.print("What is your name? (only one word) : "); name = input.next();
+             playerExist = loadFile(name, playerData, player);
+             //if they don't exist create them and put them on the save file
+            if (playerExist == false){
+                newcomer(player, name, playerData);
+                System.out.println("Let's look at your stats for the first time!\n" + divide);
+            } else {
+                System.out.println("Here's your stats!\n" + player.toString() + divide);
+            }
+            playerCount = 1;
+        //intialize both players and check if they exist.    
+        } else if (firstInt == 2){
+            System.out.print("Player 1 name: "); name = input.next();
+            playerExist = loadFile(name, playerData, player);
+            if (playerExist == false){
+                newcomer(player, name, playerData);
+            }
+            System.out.print("Player 2 name: "); name = input.next();
+            playerExist = loadFile(name, playerData, player2);
+            if (playerExist == false){
+                newcomer(player2, name, playerData);
+            }
+            System.out.println("Here are your stats!: \n");
+            System.out.println(player.toString() + "\n" + divide + "\n" + player2.toString());
+            playerCount = 2;
+        }
+
         //now that all the player data is set we can start the game...
          //intializing menu.. user can see some options here and make choice
         System.out.println("What would you like to do! Command list below...");
@@ -75,6 +93,10 @@ public class BetRacer {
             //first... check stats. pretty easy
             if(command.compareTo("/stats") == 0){
                 System.out.println(player.toString());
+                //if player 2 exists print their stats too!
+                if(playerCount == 2){
+                    System.out.println(divide + "\n" + player2.toString());
+                }
                 System.out.println(divide);
                 
             } else if (command.compareTo("/race") == 0){
@@ -705,5 +727,19 @@ public class BetRacer {
         if (racer.getMoves() <= 0){
            racer.setHP(false);
         }
+    }
+    //used for when a new user enters. Writes the end of the text file. 
+    public static void newcomer(Player player, String name, File playerData) throws IOException{
+        player.setName(name);
+            System.out.println("Ahh.. a newcomer. Welcome " + name + "!");
+            
+            //code here taken from journalDev.com over how to add to the end of a file
+            FileWriter fr = new FileWriter(playerData, true);
+            BufferedWriter br = new BufferedWriter(fr);
+            PrintWriter output = new PrintWriter(br);
+            output.println(player.getName() + " " + player.getMoney() + " " + player.getWins() + " " + player.getLosses());
+            output.close();
+            br.close();
+            fr.close();
     }
 }    
