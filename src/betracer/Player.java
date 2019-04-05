@@ -7,14 +7,15 @@ package betracer;
  */
 public class Player {
     private String name; 
-    private int wins, losses, racerBet;
+    private int wins, losses, racerBet, sponsor;
     private double money;
     
     public Player(){
         name = "";
         wins = 0; losses = 0;
-        money = 1000.00;
+        money = 5000.00;
         racerBet = 0;
+        sponsor = 0;
     }
     
     //methods
@@ -53,12 +54,20 @@ public class Player {
     }
     @Override
     public String toString(){
-        return String.format("Username: %s\nMoney: %.2f\nWins: %d    Losses: %d", name, money, wins, losses);
+        return String.format("Username: %s\nMoney: %.2f\nWins: %d    Losses: %d\nSponsored Driver: %d", name, money, wins, losses, sponsor);
     }
     public void setBet(int num){
         racerBet = num;
     }
     public int getBet(){
         return racerBet;
+    }
+    //next few methods are part of the sponsor update
+    //they will allow a player to sponsor a driver 
+    public void setSponsor(int num){
+        sponsor = num;
+    }
+    public int getSponsor(){
+        return sponsor;
     }
 }

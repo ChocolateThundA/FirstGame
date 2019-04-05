@@ -63,6 +63,7 @@ public class BetRacer {
             if (playerExist == false){
                 newcomer(player, name, playerData);
                 System.out.println("Let's look at your stats for the first time!\n" + divide);
+                System.out.println(player.toString() + "\n" + divide2);
             } else {
                 System.out.println("Here's your stats!\n" + player.toString() + "\n" + divide);
             }
@@ -88,7 +89,7 @@ public class BetRacer {
         //now that all the player data is set we can start the game...
          //intializing menu.. user can see some options here and make choice
         System.out.println("What would you like to do! Command list below...");
-        System.out.println("'/stats' : see your stats\n'/race' : bet on a race\n'/quit' : leave the game\n'/help' : gives a list of the commands\n'/scores' : take a look at the top local players\n---");
+        System.out.println("'/stats' : see your stats\n'/race' : bet on a race\n'/quit' : leave the game\n'/help' : gives a list of the commands\n'/scores' : take a look at the top local players\n'/sponsor' : pay to sponsor a driver---");
         System.out.print("Command: ");command = input.next();
         System.out.println(divide);
         do{   
@@ -247,6 +248,28 @@ public class BetRacer {
             } else if(command.compareTo("/scores") == 0) {
                 leaderBoard(playerData, player, player2, playerCount);
                 System.out.println(divide);
+                
+            } else if(command.compareTo("/sponsor") == 0){
+                int choice; boolean cont = false;
+                System.out.print(divide + "\nWelcome to the sponsor board...\nSponsoring a driver costs 1000\nWho would you like to sponsor?[1-6] [0 to quit]: ");
+                choice = (int)input.nextDouble();
+                do{
+                    if(choice < 0 || choice > 6){
+                        System.out.print("Invalid number. Try again: "); choice = (int)input.nextDouble();
+                    } else {
+                        cont = true;
+                    }
+                } while(cont == false);
+                if(choice != 0 && player.getMoney() > 1000){
+                    player.setSponsor(choice);
+                    player.alterMoney(-1000);
+                    System.out.println(divide);
+                } else if (choice == 0) {
+                    System.out.println("Come again!!\n" + divide);
+                } else {
+                    System.out.println("Come again when you have more money..\n" + divide);
+                }
+                
             } else {
                 System.out.println("Did not enter a valid command. Try '/help' to see a list of valid commands.");
             }
@@ -493,6 +516,26 @@ public class BetRacer {
             player.addLoss();
             System.out.println("You lost: " + moneyBet);
         }
+        //next we will calculate the sponsor winnings if the player has a sponsor
+        if(player.getSponsor() != 0){
+            double sponsorWinnings;
+            if(player.getSponsor() == first){
+                sponsorWinnings = calcSponsorFirst(degree);
+                player.alterMoney(sponsorWinnings);
+                System.out.println("Your sponsored driver got FIRST; they won you: " + sponsorWinnings);
+            } else if (player.getSponsor() == second){
+                sponsorWinnings = calcSponsorSecond(degree);
+                player.alterMoney(sponsorWinnings);
+                System.out.println("Your sponsored driver got SECOND; they won you: " + sponsorWinnings);
+            } else if (player.getSponsor() == third){
+                sponsorWinnings = calcSponsorThird(degree);
+                player.alterMoney(sponsorWinnings);
+                System.out.println("Your sponsored driver got THIRD; they won: " + sponsorWinnings);
+            } else {
+                System.out.println("Your sponored driver didn't win.");
+            }
+        }
+        
     }
     
     //method used to check if you have played before under the name
@@ -502,12 +545,13 @@ public class BetRacer {
         
         while (reader.hasNext() && exists == false){
             ArrayList data = new ArrayList();
-            data.add(reader.next()); data.add(reader.nextDouble()); data.add(reader.nextInt()); data.add(reader.nextInt());
+            data.add(reader.next()); data.add(reader.nextDouble()); data.add(reader.nextInt()); data.add(reader.nextInt()); data.add(reader.nextInt());
             if (data.get(0).equals(name) == true){
                 player.setName(name);
                 player.setMoney((double) data.get(1));
                 player.setWins((int) data.get(2));
                 player.setLoss((int) data.get(3));
+                player.setSponsor((int) data.get(4));
                 exists = true;
             }
             reader.nextLine();   
@@ -540,7 +584,7 @@ public class BetRacer {
         for (int i = 0; i < incomingData.size(); i++) {
             String[] lineArray = incomingData.get(i).split(" ");
             if(lineArray[0].equals(player.getName()) == true){
-                output.println(player.getName() + " " + player.getMoney() + " " + player.getWins() + " " + player.getLosses());
+                output.println(player.getName() + " " + player.getMoney() + " " + player.getWins() + " " + player.getLosses() + " " + player.getSponsor());
             } else {
                 output.println(incomingData.get(i));
             }
@@ -650,6 +694,69 @@ public class BetRacer {
                 break;
             default:
                 winnings = 0.0;
+                break;
+        }
+        return winnings;
+    }
+    public static double calcSponsorFirst(int degree){
+        double winnings;
+        switch(degree){
+            case 0:
+                winnings = 100;
+                break;
+            case 1:
+                winnings = 250;
+                break;
+            case 2:
+                winnings = 500;
+                break;
+            case 3:
+                winnings = 1000;
+                break;
+            default:
+                winnings = 0;
+                break;
+        }
+        return winnings;
+    }
+    public static double calcSponsorSecond(int degree){
+        double winnings;
+        switch(degree){
+            case 0:
+                winnings = 50;
+                break;
+            case 1:
+                winnings = 125;
+                break;
+            case 2:
+                winnings = 250;
+                break;
+            case 3:
+                winnings = 500;
+                break;
+            default:
+                winnings = 0;
+                break;
+        }
+        return winnings;
+    }
+    public static double calcSponsorThird(int degree){
+        double winnings;
+        switch(degree){
+            case 0:
+                winnings = 25;
+                break;
+            case 1:
+                winnings = 75;
+                break;
+            case 2:
+                winnings = 125;
+                break;
+            case 3:
+                winnings = 250;
+                break;
+            default:
+                winnings = 0;
                 break;
         }
         return winnings;
@@ -789,7 +896,7 @@ public class BetRacer {
             FileWriter fr = new FileWriter(playerData, true);
             BufferedWriter br = new BufferedWriter(fr);
             PrintWriter output = new PrintWriter(br);
-            output.println(player.getName() + " " + player.getMoney() + " " + player.getWins() + " " + player.getLosses());
+            output.println(player.getName() + " " + player.getMoney() + " " + player.getWins() + " " + player.getLosses() + " " + player.getSponsor());
             output.close();
             br.close();
             fr.close();
