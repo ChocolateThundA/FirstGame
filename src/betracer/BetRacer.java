@@ -17,20 +17,21 @@ public class BetRacer {
     public static void main(String[] args) throws FileNotFoundException, InterruptedException, IOException {
         //Declare variables
         int lengthOfTrack;
-        int degreeOfRace;
+        int degreeOfRace = 0;
         int racerBet;
         int playerCount = 0;
-        String name, divide = "---------------------", command;
+        String name, divide = "---------------------",divide2 = "-----", command;
         boolean playerExist;
-        double bet, bet2 = 0.0, minimumBet;
-        double[] racerProgs;
+        double bet, bet2 = 0.0, minimumBet = 0.0;
+        double[] racerProgs; double[] minimumBets = new double[4]; int[] dailyRaces = new int[4];
         
         //declare Scanner
         Scanner input = new Scanner(System.in);
         
         //declare files
         File playerData = new File("playerData.txt");
-        
+        File dailyRace = new File("dailyRace.txt");
+       
         //delare player
         Player player = new Player();
         Player player2 = new Player();
@@ -103,30 +104,69 @@ public class BetRacer {
                 
             } else if (command.compareTo("/race") == 0){
                 //this is the big part. The whole game if you will.
-                degreeOfRace = degreeGenerate();
-                switch(degreeOfRace){
-                    case 0:
-                        minimumBet = 1.0;
-                        break;
-                    case 1:
-                        minimumBet = 100.00;
-                        break;
-                    case 2:
-                        minimumBet = 250.00;
-                        break;
-                    case 3:
-                        minimumBet = 500.00;
-                        break;
-                    default:
-                        minimumBet = 1.0;
-                        break;
+                for (int i = 0; i < 4; i++) {
+                    degreeOfRace = degreeGenerate();
+                    dailyRaces[i] = degreeOfRace;
                 }
-                System.out.println("Up next is a degree " + degreeOfRace + " race.");
+                for(int i = 0; i < 4; i++){
+                    switch(dailyRaces[i]){
+                        case 0:
+                            minimumBet = 1.0;
+                            break;
+                        case 1:
+                            minimumBet = 100.00;
+                            break;
+                        case 2:
+                            minimumBet = 250.00;
+                            break;
+                        case 3:
+                            minimumBet = 500.00;
+                            break;
+                        default:
+                            minimumBet = 1.0;
+                            break;
+                    }
+                    minimumBets[i] = minimumBet;
+                }
+                //next a list of the four daily races are shown. From here you can choose which race you want to be in//
+                System.out.println("::DAILY RACES::");
+                //next bit here prints out a baord of the daily races ocurring and then writes that data to a text file to be read from later
+                PrintWriter output = new PrintWriter(dailyRace);
+                for (int i = 0; i < 4; i++) {
+                    System.out.printf("%d: Degree: %2d  Minimum buy in: %.2f\n", i + 1, dailyRaces[i], minimumBets[i]);
+                    output.printf("%d %d %f\n", i+1, dailyRaces[i], minimumBets[i]);
+                }
+                output.close();
+                System.out.println(divide);
                 //add in ability to choose if you want to do that race//
-                if (minimumBet <= player.getMoney() && minimumBet <= player2.getMoney()){
-                    System.out.print("Do you wish to participate in this race. Minimum payment will be: " + minimumBet + "\n[1]yes [any other number]no: ");
-                    int reply = (int)input.nextDouble();
-                    if (reply == 1){
+                System.out.print("Which race would you like to particpate in[1-4]; input 0 for none: "); String raceChoice = input.next();
+                boolean next = false;
+                char character;
+                do{
+                    character = raceChoice.charAt(0);
+                    if((int)character < 48 || (int)character > 52){
+                        System.out.print("Try an acceptable number: "); raceChoice = input.next();
+                    } else {
+                        next = true;
+                    }
+                }while(next == false);
+                next = false;
+                if((int)character != 48 ){
+                    Scanner reader = new Scanner(dailyRace);
+                    next = true;
+                    while(reader.hasNext()){
+                        String line = reader.nextLine();
+                        String[] lineArray = line.split(" ");
+                        if(raceChoice.compareTo(lineArray[0]) == 0){
+                            degreeOfRace = Integer.parseInt(lineArray[1]);
+                            minimumBet = Double.parseDouble(lineArray[2]);
+                        }
+                    }
+                    reader.close();
+                } 
+                
+                if (minimumBet <= player.getMoney() && minimumBet <= player2.getMoney() && next == true){
+                    System.out.println(divide2);
                         boolean cont = false, cont2 = true; 
                         do{
                             System.out.println("Minimum buy in for degree " + degreeOfRace + ": " + minimumBet);
@@ -195,11 +235,8 @@ public class BetRacer {
                             results(racerProgs2, player2.getBet(), player2, degreeOfRace, bet2);
                         }
                         System.out.println(divide);
-                    } else {
-                        System.out.println("Oh. well please come again soon!\n" + divide);
-                    }
                 } else {
-                    System.out.println("Sorry... you don't have enough for the race today.\n" + divide );
+                    System.out.println("Oh... ok. Have a nice day!\n" + divide );
                 }    
             } else if (command.compareTo("/help") == 0){
                 System.out.println(":::COMMAND LIST:::");
@@ -395,9 +432,10 @@ public class BetRacer {
         double firstProg = results[0];
         int first;
         for (int i = 0; i < results.length; i++) {
-            if(results[i] == firstProg && i+1 == bet){
+            if(results[i] >= firstProg && i+1 == player.getBet()){
                 firstProg = results[i];
-            } else if(results[i] > firstProg){
+            }
+            if(results[i] > firstProg){
                 firstProg = results[i];
             }
         }
@@ -407,9 +445,10 @@ public class BetRacer {
         double secondProg = 0.0;
         int second;
         for (int i = 0; i < results.length; i++) {
-            if(results[i] == secondProg && i+1 == bet){
+            if(results[i] >= secondProg && i+1 == player.getBet()){
                 secondProg = results[i];
-            } else if(results[i] > secondProg){
+            } 
+            if(results[i] > secondProg){
                 secondProg = results[i];
             }
         }
@@ -419,9 +458,10 @@ public class BetRacer {
         double thirdProg = 0.0;
         int third;
          for (int i = 0; i < results.length; i++) {
-            if(results[i] == thirdProg && i+1 == bet){
+            if(results[i] >= thirdProg && i+1 == player.getBet()){
                 thirdProg = results[i];
-            } else if(results[i] > thirdProg){
+            } 
+            if(results[i] > thirdProg){
                 thirdProg = results[i];
             }
         }
