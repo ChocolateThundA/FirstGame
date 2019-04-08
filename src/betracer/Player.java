@@ -70,4 +70,13 @@ public class Player {
     public int getSponsor(){
         return sponsor;
     }
+    public boolean hasSponsor(){
+        boolean has;
+        if(sponsor != 0){
+            has = true;
+        } else{
+            has = false;
+        }
+        return has;
+    }
 }

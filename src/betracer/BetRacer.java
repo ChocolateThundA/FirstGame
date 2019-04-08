@@ -18,7 +18,7 @@ public class BetRacer {
         //Declare variables
         int lengthOfTrack;
         int degreeOfRace = 0;
-        int racerBet;
+        int racerBet, dayCount = 0;
         int playerCount = 0;
         String name, divide = "---------------------",divide2 = "-----", command;
         boolean playerExist;
@@ -238,7 +238,15 @@ public class BetRacer {
                         System.out.println(divide);
                 } else {
                     System.out.println("Oh... ok. Have a nice day!\n" + divide );
-                }    
+                }
+                if(player.hasSponsor() == true){
+                    dayCount ++;
+                    if(dayCount == 5){
+                        player.setSponsor(0);
+                        System.out.println("Your Sponsorship has expired! Feel free to renew!");
+                        dayCount = 0;
+                    }
+                }
             } else if (command.compareTo("/help") == 0){
                 System.out.println(":::COMMAND LIST:::");
                 System.out.println("type /stats to bring up your profile stats\ntype /race to race\ntype /quit to leave the game\ntype /help to see this again!");
@@ -614,6 +622,7 @@ public class BetRacer {
         playerdata.delete();
         boolean successful = tempPlayerData.renameTo(playerdata);
     }
+    //next six methods calculate the winnings of first, second, and third.
     public static double calcFirst(int degree, double moneyBet){
         double winnings;
         switch(degree){
