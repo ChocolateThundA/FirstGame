@@ -81,5 +81,14 @@ public class Car {
     public String toString(){
         return "Name: " + name + "Acceleration: " + acceleration + "\nTop Speed: " + topSpeed + "\nMoves: " + moves + "Progress: " + progress + "Distance: " + distance ;
     }
-            
+    //methods added in during the black market update
+    public void adjustAccel(int num){
+        acceleration = num;
+    }
+    public void adjustTopSpeed(int num){
+        topSpeed = num;
+    }
+    public void changeMoves(int num){
+        moves = num;
+    }
 }

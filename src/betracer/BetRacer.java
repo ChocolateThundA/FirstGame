@@ -235,17 +235,18 @@ public class BetRacer {
                         if(playerCount == 2){
                             results(racerProgs2, player2.getBet(), player2, degreeOfRace, bet2);
                         }
+                        if(player.hasSponsor() == true || player2.hasSponsor()){
+                            dayCount ++;
+                            if(dayCount == 5){
+                                player.setSponsor(0);
+                                player2.setSponsor(0);
+                                System.out.println("Your Sponsorship has expired! Feel free to renew!");
+                                dayCount = 0;
+                            }    
+                        }
                         System.out.println(divide);
                 } else {
                     System.out.println("Oh... ok. Have a nice day!\n" + divide );
-                }
-                if(player.hasSponsor() == true){
-                    dayCount ++;
-                    if(dayCount == 5){
-                        player.setSponsor(0);
-                        System.out.println("Your Sponsorship has expired! Feel free to renew!");
-                        dayCount = 0;
-                    }
                 }
             } else if (command.compareTo("/help") == 0){
                 System.out.println(":::COMMAND LIST:::");
@@ -259,7 +260,7 @@ public class BetRacer {
                 
             } else if(command.compareTo("/sponsor") == 0){
                 int choice; boolean cont = false;
-                System.out.print(divide + "\nWelcome to the sponsor board...\nSponsoring a driver costs 1000\nWho would you like to sponsor?[1-6] [0 to quit]: ");
+                System.out.print(divide + "\nWelcome to the sponsor board...\nSponsoring a driver costs 1000\nSponsors reset every five days\nWho would you like to sponsor?[1-6] [0 to quit]: ");
                 choice = (int)input.nextDouble();
                 do{
                     if(choice < 0 || choice > 6){
@@ -275,7 +276,29 @@ public class BetRacer {
                 } else if (choice == 0) {
                     System.out.println("Come again!!\n" + divide);
                 } else {
-                    System.out.println("Come again when you have more money..\n" + divide);
+                    System.out.println("Nice try. Come again when you have more money..\n" + divide);
+                }
+                
+                if(playerCount == 2){
+                    System.out.println(divide2);
+                    System.out.print(divide + "\nWelcome to the sponsor board...\nSponsoring a driver costs 1000\nWho would you like to sponsor?[1-6] [0 to quit]: ");
+                    choice = (int)input.nextDouble();
+                    do{
+                        if(choice < 0 || choice > 6){
+                            System.out.print("Invalid number. Try again: "); choice = (int)input.nextDouble();
+                        } else {
+                            cont = true;
+                        }
+                    } while(cont == false);
+                    if(choice != 0 && player2.getMoney() > 1000){
+                        player2.setSponsor(choice);
+                        player2.alterMoney(-1000);
+                        System.out.println(divide);
+                    } else if (choice == 0) {
+                        System.out.println("Come again!!\n" + divide);
+                    } else {
+                        System.out.println("Nice try. Come again when you have more money..\n" + divide);
+                    }    
                 }
                 
             } else {
@@ -346,7 +369,8 @@ public class BetRacer {
     //should calculate a winner, simulate the race
     @SuppressWarnings("empty-statement")
     public static double[] race(int length, Player player, Player player2, int playerCount) throws InterruptedException{
-        
+        //making a random opject
+        Random rand = new Random();
         //making the racers here this way they change everytime
         Car racer1 = new Car("Racer 1");
         Car racer2 = new Car("Racer 2"); 
@@ -385,6 +409,13 @@ public class BetRacer {
                 } else {
                     System.out.println("Goodluck " + player2.getName());
                 }
+            }
+            //next we develop the chance that a random individual may appear and off the take out a car
+            int appearance = rand.nextInt(100) + 1;
+            if(appearance <= 20){
+                Vandal guy = new Vandal();
+                blackMarket(player, guy, racer1, racer2, racer3, racer4, racer5, racer6);
+                vandalise(guy);
             }
         //The Race now starts that we have the final bets
         System.out.println("::Let the race begin!::");
@@ -972,6 +1003,93 @@ public class BetRacer {
                         System.out.println("Try a number 1 or 0");
                     }
                 } while (cont == false);
+        }
+        //method used to extablish the characteristics of the vandal
+        public static void blackMarket(Player player, Vandal vandal, Car racer1, Car racer2, Car racer3, Car racer4, Car racer5, Car racer6){
+            //intializing variable
+            double amount;
+            int car;
+            
+            Scanner input = new Scanner(System.in);
+            System.out.println("A shady man in a black trench coat approaches you.");
+            System.out.print("Hello there. May I interest you in some impoved odds?\n[1]yes [2]no: "); int answer = (int)input.nextDouble();
+            boolean cont = false;
+            do{
+                if(answer == 1 || answer == 0){
+                    cont = true;
+                } else {
+                    System.out.print("Try again: "); answer = (int)input.nextDouble();
+                }
+            } while (cont == false);
+            if(answer == 1){
+                cont = false;
+                System.out.print("Good! How much you giving and who am I dealing with?\nMoney: "); amount = input.nextDouble();
+                do{
+                   if(player.getMoney() < amount){
+                       System.out.println("You don't have that much. Try again: "); amount = input.nextDouble();
+                   } else{
+                       cont = true;
+                   }
+                } while (cont == false);
+                vandal.setPayment(amount);
+                System.out.print("Car[1-6]: "); car = (int)input.nextDouble();
+                cont = false;
+                do{
+                    if(car < 1 || car > 6){
+                        System.out.print("Try again!: "); car = (int)input.nextDouble();
+                    } else {
+                        cont = true;
+                    }
+                } while (cont == false);
+                //getting the right car
+                switch(car){
+                        case 1:
+                            vandal.setTarget(racer1);
+                            break;
+                        case 2:
+                            vandal.setTarget(racer2);
+                            break;
+                        case 3:
+                            vandal.setTarget(racer3);
+                            break;
+                        case 4:
+                            vandal.setTarget(racer4);
+                            break;
+                        case 5:
+                            vandal.setTarget(racer5);
+                            break;
+                        case 6:
+                            vandal.setTarget(racer6);
+                            break;
+                        default:
+                            System.out.println("Didn't work");
+                            break;
+                    }
+                vandal.setTell();
+            } else {
+                System.out.println("Suit yourself... goodluck in the race.");
             }
+        }
+        //next method is for the vandal to mess with the car of choosing
+        public static void vandalise(Vandal vandal){
+            if(vandal.getPayment() < 250){
+                vandal.getTarget().adjustAccel(4);
+            } else if (vandal.getPayment() < 500){
+                vandal.getTarget().adjustAccel(2);
+            } else if (vandal.getPayment() < 750){
+                vandal.getTarget().adjustTopSpeed(5);
+                vandal.getTarget().adjustAccel(2);
+            } else if (vandal.getPayment() < 1000){
+                vandal.getTarget().changeMoves(50);
+                vandal.getTarget().adjustTopSpeed(5);
+            } else if (vandal.getPayment() < 2000){
+                vandal.getTarget().adjustAccel(2);
+                vandal.getTarget().changeMoves(40);
+            } else if (vandal.getPayment() >= 2000){
+                vandal.getTarget().adjustAccel(0);
+                vandal.getTarget().changeMoves(0);
+                vandal.getTarget().adjustTopSpeed(0);
+            }
+        }
     }
     
