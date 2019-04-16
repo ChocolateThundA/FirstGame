@@ -378,7 +378,8 @@ public class BetRacer {
         Car racer4 = new Car("Racer 4"); 
         Car racer5 = new Car("Racer 5"); 
         Car racer6 = new Car("Racer 6"); 
-        
+        //making the vandal
+        Vandal guy = new Vandal();
         //making a scanner for user input
         Scanner input = new Scanner(System.in);
         //declare a boolean so the race continues to go
@@ -411,12 +412,13 @@ public class BetRacer {
                 }
             }
             //next we develop the chance that a random individual may appear and off the take out a car
-            int appearance = rand.nextInt(100) + 1;
-            if(appearance <= 20){
-                Vandal guy = new Vandal();
-                blackMarket(player, guy, racer1, racer2, racer3, racer4, racer5, racer6);
-                vandalise(guy);
-            }
+            if(playerCount == 1){
+                int appearance = rand.nextInt(100) + 1;
+                if(appearance <= 20){
+                    blackMarket(player, guy, racer1, racer2, racer3, racer4, racer5, racer6);
+                    vandalise(guy);
+                }
+            }    
         //The Race now starts that we have the final bets
         System.out.println("::Let the race begin!::");
         do{
@@ -484,6 +486,12 @@ public class BetRacer {
         finisherProgs[0] = racer1.getProg(); finisherProgs[1] = racer2.getProg(); finisherProgs[2] = racer3.getProg();
         finisherProgs[3] = racer4.getProg(); finisherProgs[4] = racer5.getProg(); finisherProgs[5] = racer6.getProg();
         
+        //if the vandal is a teller they will rat you out and you will lose half your money
+        if(guy.getTell() == true){
+            double loss = player.getMoney() / 2;
+            System.out.println("It has been reported you cheated and payed to have a car vandalized. This is not tolerable!\n You have been fined " + loss);
+            player.alterMoney(-loss);
+        }
       return finisherProgs;  
     }
     
@@ -1004,8 +1012,8 @@ public class BetRacer {
                     }
                 } while (cont == false);
         }
-        //method used to extablish the characteristics of the vandal
-        public static void blackMarket(Player player, Vandal vandal, Car racer1, Car racer2, Car racer3, Car racer4, Car racer5, Car racer6){
+    //method used to extablish the characteristics of the vandal
+    public static void blackMarket(Player player, Vandal vandal, Car racer1, Car racer2, Car racer3, Car racer4, Car racer5, Car racer6){
             //intializing variable
             double amount;
             int car;
@@ -1070,8 +1078,8 @@ public class BetRacer {
                 System.out.println("Suit yourself... goodluck in the race.");
             }
         }
-        //next method is for the vandal to mess with the car of choosing
-        public static void vandalise(Vandal vandal){
+    //next method is for the vandal to mess with the car of choosing
+    public static void vandalise(Vandal vandal){
             if(vandal.getPayment() < 250){
                 vandal.getTarget().adjustAccel(4);
             } else if (vandal.getPayment() < 500){
