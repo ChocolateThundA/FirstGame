@@ -9,6 +9,7 @@ public class Vandal {
     private double payment;
     private Car target;
     private boolean tell;
+    private boolean hasTarget;
     
     private Random rand = new Random();
     public Vandal(){
@@ -25,6 +26,12 @@ public class Vandal {
     }
     public void setTarget(Car car){
         target = car;
+    }
+    public void setHasTarget(boolean has){
+        hasTarget = has;
+    }
+    public boolean getHasTarget(){
+        return hasTarget;
     }
     public Car getTarget(){
         return target;

@@ -414,9 +414,12 @@ public class BetRacer {
             //next we develop the chance that a random individual may appear and off the take out a car
             if(playerCount == 1){
                 int appearance = rand.nextInt(100) + 1;
+                //test num
                 if(appearance <= 20){
                     blackMarket(player, guy, racer1, racer2, racer3, racer4, racer5, racer6);
-                    vandalise(guy);
+                    if(guy.getHasTarget() == true){
+                        vandalise(guy);
+                    }
                 }
             }    
         //The Race now starts that we have the final bets
@@ -1020,7 +1023,7 @@ public class BetRacer {
             
             Scanner input = new Scanner(System.in);
             System.out.println("A shady man in a black trench coat approaches you.");
-            System.out.print("Hello there. May I interest you in some impoved odds?\n[1]yes [2]no: "); int answer = (int)input.nextDouble();
+            System.out.print("Hello there. May I interest you in some impoved odds?\n[1]yes [0]no: "); int answer = (int)input.nextDouble();
             boolean cont = false;
             do{
                 if(answer == 1 || answer == 0){
@@ -1030,6 +1033,7 @@ public class BetRacer {
                 }
             } while (cont == false);
             if(answer == 1){
+                vandal.setHasTarget(true);
                 cont = false;
                 System.out.print("Good! How much you giving and who am I dealing with?\nMoney: "); amount = input.nextDouble();
                 do{
@@ -1075,6 +1079,7 @@ public class BetRacer {
                     }
                 vandal.setTell();
             } else {
+                vandal.setHasTarget(false);
                 System.out.println("Suit yourself... goodluck in the race.");
             }
         }
